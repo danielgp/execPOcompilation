@@ -67,8 +67,6 @@ class compileLocalization
                             $out          = null;
                             exec($cmdToExecute . ' 2>&1', $out);
                             $this->filesCompiled++;
-                            echo '<br/>';
-                            var_dump($out);
                             if (is_array($out)) {
                                 if (count($out) > 0) {
                                     foreach ($out as $key => $value) {
