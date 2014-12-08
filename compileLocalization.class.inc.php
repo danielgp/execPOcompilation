@@ -36,14 +36,30 @@ namespace NamespacePgdApp\Core;
 class compileLocalization
 {
 
+    private $compilerExists;
+    private $folderToSearchInto;
+    private $filesFound    = 0;
     private $filesCompiled = 0;
 
     public function __construct($givenFolder)
     {
-        // next line is just to generate an error log file that is for this module only and current date
+        // generate an error log file that is for this module only and current date
         ini_set('error_log', ERROR_DIR . '/' . ERROR_FILE);
+        $this->handleLocalization();
+        $this->folderToSearchInto = $givenFolder;
+        $this->checkCompilerExistance();
+        echo $this->setHeader();
         $this->compileLocalizationFiles($givenFolder);
-        echo '<hr/>I finished searching for [.po] files within [' . htmlentities($givenFolder) . '], resulting ' . $this->filesCompiled . ' files found and compiled!<hr/>';
+        echo $this->setFooter();
+    }
+
+    private function checkCompilerExistance()
+    {
+        if (file_exists(GETTEXT_COMPILER)) {
+            $this->compilerExists = true;
+        } else {
+            $this->compilerExists = false;
+        }
     }
 
     private function compileLocalizationFiles($originDirectory)
@@ -58,26 +74,141 @@ class compileLocalization
                     $this->compileLocalizationFiles($inputFile);
                 } else {
                     clearstatcache();
-                    $statistics = stat($inputFile);
-                    $fileParts  = pathinfo($inputFile);
+                    $fileParts = pathinfo($inputFile);
                     if (strlen($fileParts['basename']) > 2) {
                         if (strtolower($fileParts['extension']) === 'po') {
-                            $cmdToExecute = GETTEXT_COMPILER . ' ' . $inputFile . ' --output-file=' . str_replace('.po', '.mo', $inputFile) . ' --statistics --check --verbose';
-                            echo '<hr/>Executing::::: <b>' . $cmdToExecute . '</b>';
-                            $out          = null;
-                            exec($cmdToExecute . ' 2>&1', $out);
-                            $this->filesCompiled++;
-                            if (is_array($out)) {
-                                if (count($out) > 0) {
-                                    foreach ($out as $key => $value) {
-                                        echo '<br/>' . $key . ' ===> ' . $value;
+                            if ($this->filesFound == 0) {
+                                echo $this->setTableContent('Header', [
+                                    '#',
+                                    _('i18n_FeedbackTableHeader_FilePath'),
+                                    _('i18n_FeedbackTableHeader_FileName'),
+                                    _('i18n_FeedbackTableHeader_FileMoSize'),
+                                    _('i18n_FeedbackTableHeader_CommandExecuted'),
+                                    _('i18n_FeedbackTableHeader_CommandFeedback'),
+                                    _('i18n_FeedbackTableHeader_FilePoSize'),
+                                ]);
+                            }
+                            $this->filesFound++;
+                            $outputFile = str_replace('.po', '.mo', $inputFile);
+                            if ($this->compilerExists) {
+                                $cmdToExecute         = GETTEXT_COMPILER . ' ' . $inputFile
+                                    . ' --output-file=' . $outputFile
+                                    . ' --statistics --check --verbose';
+                                $out                  = null;
+                                $feedbackFromCompiler = [];
+                                exec($cmdToExecute . ' 2>&1', $out);
+                                $this->filesCompiled++;
+                                if (is_array($out)) {
+                                    if (count($out) > 0) {
+                                        foreach ($out as $key => $value) {
+                                            $feedbackFromCompiler[] = $key . ' ===> ' . $value;
+                                        }
                                     }
                                 }
+                                echo $this->setTableContent('Cell', [
+                                    $this->filesFound,
+                                    $fileParts['dirname'],
+                                    $fileParts['basename'],
+                                    filesize($inputFile),
+                                    $cmdToExecute,
+                                    implode('<br/>', $feedbackFromCompiler),
+                                    filesize($outputFile),
+                                ]);
+                            } else {
+                                echo $this->setTableContent('Cell', [
+                                    $this->filesFound,
+                                    $fileParts['dirname'],
+                                    $fileParts['basename'],
+                                    filesize($inputFile),
+                                    '<p style="color:red;">' . sprintf(_('i18n_CompilationNotPossible'), '<i>' . GETTEXT_COMPILER . '</i>') . '</p>',
+                                    '---',
+                                    '---',
+                                ]);
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    private function handleLocalization()
+    {
+        $usedDomain = 'messages';
+        if (isset($_GET['lang'])) {
+            $_SESSION['lang'] = $_GET['lang'];
+        } elseif (!isset($_SESSION['lang'])) {
+            $_SESSION['lang'] = APPLICATION_DEFAULT_LANGUAGE;
+        }
+        T_setlocale(LC_MESSAGES, $_SESSION['lang']);
+        if (function_exists('bindtextdomain')) {
+            bindtextdomain($usedDomain, realpath('./locale'));
+            bind_textdomain_codeset($usedDomain, 'UTF-8');
+            textdomain($usedDomain);
+        } else {
+            echo 'No gettext extension is active in current PHP configuration!';
+        }
+    }
+
+    private function setFooter()
+    {
+        $sReturn = [];
+        if ($this->filesFound > 0) {
+            $sReturn[] = $this->setTableContent('Footer');
+        }
+        $sReturn[] = '<h2>'
+            . sprintf(_('i18n_FinishedCompilation'), '<i>'
+                . htmlentities($this->folderToSearchInto)
+                . '</i>', $this->filesFound, $this->filesCompiled)
+            . '</h2>'
+            . '</body>'
+            . '</html>';
+        return implode('', $sReturn);
+    }
+
+    private function setHeader()
+    {
+        return '<!DOCTYPE html>'
+            . '<html lang="' . str_replace('_', '-', $_SESSION['lang']) . '">'
+            . '<head>'
+            . '<meta charset="utf-8" />'
+            . '<meta name="viewport" content="width=device-width" />'
+            . '<title>' . APPLICATION_NAME . '</title>'
+            . '</head>'
+            . '<body>'
+            . '<h1>'
+            . sprintf(_('i18n_StartingCompilation'), '<i>'
+                . htmlentities($this->folderToSearchInto) . '</i>')
+            . '</h1>';
+    }
+
+    private function setTableContent($kind, $additionalContent = null)
+    {
+        $sReturn = [];
+        switch ($kind) {
+            case 'Cell':
+                $sReturn[] = '<tr>';
+                if (is_array($additionalContent)) {
+                    $sReturn[] = '<td>' . implode('</td><td>', $additionalContent) . '</td>';
+                }
+                $sReturn[] = '</tr>';
+                break;
+            case 'Footer':
+                $sReturn[] = '</tbody>'
+                    . '</table>';
+                break;
+            case 'Header':
+                $sReturn[] = '<table>'
+                    . '<thead>'
+                    . '<tr>';
+                if (is_array($additionalContent)) {
+                    $sReturn[] = '<th>' . implode('</th><th>', $additionalContent) . '</th>';
+                }
+                $sReturn[] = '</tr>'
+                    . '</thead>'
+                    . '<tbody>';
+                break;
+        }
+        return implode('', $sReturn);
     }
 }

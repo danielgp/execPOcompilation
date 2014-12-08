@@ -1,0 +1,48 @@
+# English translations for exePOcompilation package.
+# Copyright (C) 2014 Daniel Popiniuc
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: DP\n"
+"POT-Creation-Date: 2014-12-08 13:09+0200\n"
+"PO-Revision-Date: 2014-12-08 13:09+0200\n"
+"Last-Translator: Daniel Popiniuc <danielpopiniuc@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "i18n_CompilationNotPossible"
+msgstr "I was not able to find the compiler file on your configured location %s... Adjust your configuration accordingly and try again!"
+
+msgid "i18n_FeedbackTableHeader_CommandExecuted"
+msgstr "Command executed"
+
+msgid "i18n_FeedbackTableHeader_CommandFeedback"
+msgstr "Command feedback"
+
+msgid "i18n_FeedbackTableHeader_FileMoSize"
+msgstr "MO file size [bytes]"
+
+msgid "i18n_FeedbackTableHeader_FileName"
+msgstr "PO file name"
+
+msgid "i18n_FeedbackTableHeader_FilePath"
+msgstr "PO/MO file path"
+
+msgid "i18n_FeedbackTableHeader_FilePoSize"
+msgstr "PO file size [bytes]"
+
+msgid "i18n_FeedbackTableHeader_No"
+msgstr "No."
+
+msgid "i18n_FinishedCompilation"
+msgstr "I finished searching for [.po] files within %s, resulting %d files found and %d compiled!"
+
+msgid "i18n_StartingCompilation"
+msgstr "I will search for files having [.po] extension within %s folder and will compile them resulting files with same name but extension [.mo] in the same location where each was found!"
+

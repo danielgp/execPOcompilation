@@ -1,0 +1,48 @@
+# Romanan translations for exePOcompilation package.
+# Copyright (C) 2014 Daniel Popiniuc
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: DP\n"
+"POT-Creation-Date: 2014-12-08 13:09+0200\n"
+"PO-Revision-Date: 2014-12-08 13:09+0200\n"
+"Last-Translator: Daniel Popiniuc <danielpopiniuc@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "i18n_CompilationNotPossible"
+msgstr "Nu am găsit fişierul de compilare conform locaţiei configurate %s... Ajustaţi configuraţia în mod corespunzător şi re-încercaţi!"
+
+msgid "i18n_FeedbackTableHeader_CommandExecuted"
+msgstr "Comanda executată"
+
+msgid "i18n_FeedbackTableHeader_CommandFeedback"
+msgstr "Feedback-ul comenzii"
+
+msgid "i18n_FeedbackTableHeader_FileMoSize"
+msgstr "Dimensiunea în bytes a fişierului MO"
+
+msgid "i18n_FeedbackTableHeader_FileName"
+msgstr "Numele fişierului PO"
+
+msgid "i18n_FeedbackTableHeader_FilePath"
+msgstr "Calea fişierului PO/MO"
+
+msgid "i18n_FeedbackTableHeader_FilePoSize"
+msgstr "Dimensiunea în bytes a fişierului PO"
+
+msgid "i18n_FeedbackTableHeader_No"
+msgstr "Nr."
+
+msgid "i18n_FinishedCompilation"
+msgstr "Am terminat căutarea după fişiere cu extensia [.po] în dosarul %s, rezultând în %d fişiere găsite şi %d compilate!"
+
+msgid "i18n_StartingCompilation"
+msgstr "Am să caut după fişiere cu extensia [.po] în dosarul %s şi am să le compilez, rezultând fişiere cu acelaşi nume dar extensia [.mo] în aceeaşi locaţie unde fiecare a fost găsit!"
+

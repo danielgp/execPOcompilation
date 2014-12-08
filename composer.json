@@ -1,0 +1,22 @@
+{
+    "name": "NamespacePgdApp/exePOcompilation",
+    "description": "This is a very cool package!",
+    "version": "1.0",
+    "time": "2014-12-08",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name":     "Daniel Popiniuc",
+            "email":    "danielpopiniuc@gmail.com",
+            "role":     "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "require-dev": {
+        "php": ">=5.3"
+    },
+    "minimum-stability": "stable"
+}
