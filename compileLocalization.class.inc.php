@@ -26,7 +26,7 @@
  *
  */
 
-namespace NamespacePgdApp\Core;
+namespace NamespacePgdApp\execPOcompilation;
 
 /**
  * Description of compileLocalization
@@ -146,7 +146,7 @@ class compileLocalization
             bind_textdomain_codeset($usedDomain, 'UTF-8');
             textdomain($usedDomain);
         } else {
-            echo 'No gettext extension is active in current PHP configuration!';
+            echo 'No gettext extension/library is active in current PHP configuration!';
         }
     }
 

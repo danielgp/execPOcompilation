@@ -1,4 +1,4 @@
-# Romanan translations for exePOcompilation package.
+# Romanian translations for execPOcompilation package.
 # Copyright (C) 2014 Daniel Popiniuc
 # This file is distributed under the same license as the PACKAGE package.
 # Automatically generated, 2014.
