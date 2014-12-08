@@ -29,4 +29,5 @@ require_once 'PHP-GetText/gettext.inc';
 require_once 'compileLocalization.config.inc.php';
 require_once 'compileLocalization.class.inc.php';
 
-$app = new NamespacePgdApp\execPOcompilation\compileLocalization(realpath('../'));
+//$app = new NamespacePgdApp\execPOcompilation\compileLocalization(realpath('../'));
+$app = new NamespacePgdApp\execPOcompilation\compileLocalization(explode('|', LOCALIZATION_FOLDERS));

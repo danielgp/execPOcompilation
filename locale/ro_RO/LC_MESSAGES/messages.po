@@ -19,6 +19,9 @@ msgstr ""
 msgid "i18n_CompilationNotPossible"
 msgstr "Nu am găsit fişierul de compilare conform locaţiei configurate %s... Ajustaţi configuraţia în mod corespunzător şi re-încercaţi!"
 
+msgid "i18n_Feedback_VariousFolders"
+msgstr "Diverse dosare"
+
 msgid "i18n_FeedbackTableHeader_CommandExecuted"
 msgstr "Comanda executată"
 
@@ -32,7 +35,7 @@ msgid "i18n_FeedbackTableHeader_FileName"
 msgstr "Numele fişierului PO"
 
 msgid "i18n_FeedbackTableHeader_FilePath"
-msgstr "Calea fişierului PO/MO"
+msgstr "Calea fişierului PO/MO\n(Relativ faţă de dosarul curent specificat în denumirea tab-ului curent)"
 
 msgid "i18n_FeedbackTableHeader_FilePoSize"
 msgstr "Dimensiunea în bytes a fişierului PO"

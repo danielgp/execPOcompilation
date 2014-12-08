@@ -19,6 +19,9 @@ msgstr ""
 msgid "i18n_CompilationNotPossible"
 msgstr "I was not able to find the compiler file on your configured location %s... Adjust your configuration accordingly and try again!"
 
+msgid "i18n_Feedback_VariousFolders"
+msgstr "Various folders"
+
 msgid "i18n_FeedbackTableHeader_CommandExecuted"
 msgstr "Command executed"
 
@@ -32,7 +35,7 @@ msgid "i18n_FeedbackTableHeader_FileName"
 msgstr "PO file name"
 
 msgid "i18n_FeedbackTableHeader_FilePath"
-msgstr "PO/MO file path"
+msgstr "PO/MO file path\n(Relative to current folder specified in this tab name)"
 
 msgid "i18n_FeedbackTableHeader_FilePoSize"
 msgstr "PO file size [bytes]"

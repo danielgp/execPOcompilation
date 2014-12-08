@@ -38,19 +38,37 @@ class compileLocalization
 
     private $compilerExists;
     private $folderToSearchInto;
-    private $filesFound    = 0;
-    private $filesCompiled = 0;
+    private $filesFound;
+    private $filesCompiled;
+    private $foldersGiven = 0;
 
     public function __construct($givenFolder)
     {
         // generate an error log file that is for this module only and current date
         ini_set('error_log', ERROR_DIR . '/' . ERROR_FILE);
         $this->handleLocalization();
-        $this->folderToSearchInto = $givenFolder;
         $this->checkCompilerExistance();
-        echo $this->setHeader();
-        $this->compileLocalizationFiles($givenFolder);
-        echo $this->setFooter();
+        echo $this->setHeaderHtml();
+        if (is_array($givenFolder)) {
+            foreach ($givenFolder as $currentFolder) {
+                $this->foldersGiven++;
+                $this->folderToSearchInto                 = $currentFolder;
+                $this->filesFound[$this->foldersGiven]    = 0;
+                $this->filesCompiled[$this->foldersGiven] = 0;
+                echo $this->setHeaderFolder($currentFolder);
+                $this->compileLocalizationFiles($currentFolder);
+                echo $this->setFooterFolder($currentFolder);
+            }
+        } else {
+            $this->foldersGiven++;
+            $this->folderToSearchInto                 = $givenFolder;
+            $this->filesFound[$this->foldersGiven]    = 0;
+            $this->filesCompiled[$this->foldersGiven] = 0;
+            echo $this->setHeaderFolder($givenFolder);
+            $this->compileLocalizationFiles($givenFolder);
+            echo $this->setFooterFolder($givenFolder);
+        }
+        echo $this->setFooterHtml();
     }
 
     private function checkCompilerExistance()
@@ -75,9 +93,9 @@ class compileLocalization
                 } else {
                     clearstatcache();
                     $fileParts = pathinfo($inputFile);
-                    if (strlen($fileParts['basename']) > 2) {
+                    if (isset($fileParts['extension']) && (strlen($fileParts['basename']) > 2)) {
                         if (strtolower($fileParts['extension']) === 'po') {
-                            if ($this->filesFound == 0) {
+                            if ($this->filesFound[$this->foldersGiven] == 0) {
                                 echo $this->setTableContent('Header', [
                                     '#',
                                     _('i18n_FeedbackTableHeader_FilePath'),
@@ -88,7 +106,7 @@ class compileLocalization
                                     _('i18n_FeedbackTableHeader_FilePoSize'),
                                 ]);
                             }
-                            $this->filesFound++;
+                            $this->filesFound[$this->foldersGiven] ++;
                             $outputFile = str_replace('.po', '.mo', $inputFile);
                             if ($this->compilerExists) {
                                 $cmdToExecute         = GETTEXT_COMPILER . ' ' . $inputFile
@@ -97,7 +115,7 @@ class compileLocalization
                                 $out                  = null;
                                 $feedbackFromCompiler = [];
                                 exec($cmdToExecute . ' 2>&1', $out);
-                                $this->filesCompiled++;
+                                $this->filesCompiled[$this->foldersGiven] ++;
                                 if (is_array($out)) {
                                     if (count($out) > 0) {
                                         foreach ($out as $key => $value) {
@@ -106,8 +124,8 @@ class compileLocalization
                                     }
                                 }
                                 echo $this->setTableContent('Cell', [
-                                    $this->filesFound,
-                                    $fileParts['dirname'],
+                                    $this->filesFound[$this->foldersGiven],
+                                    str_replace($this->folderToSearchInto, '', $fileParts['dirname']),
                                     $fileParts['basename'],
                                     filesize($inputFile),
                                     $cmdToExecute,
@@ -116,8 +134,8 @@ class compileLocalization
                                 ]);
                             } else {
                                 echo $this->setTableContent('Cell', [
-                                    $this->filesFound,
-                                    $fileParts['dirname'],
+                                    $this->filesFound[$this->foldersGiven],
+                                    str_replace($this->folderToSearchInto, '', $fileParts['dirname']),
                                     $fileParts['basename'],
                                     filesize($inputFile),
                                     '<p style="color:red;">' . sprintf(_('i18n_CompilationNotPossible'), '<i>' . GETTEXT_COMPILER . '</i>') . '</p>',
@@ -150,23 +168,47 @@ class compileLocalization
         }
     }
 
-    private function setFooter()
+    /**
+     * Returns css link to a given file
+     *
+     * @param string $cssFile
+     * @return string
+     */
+    final protected function setCssFile($cssFile)
+    {
+        return '<link rel="stylesheet" type="text/css" href="' . $cssFile . '" />';
+    }
+
+    private function setFooterFolder($currentFolder)
     {
         $sReturn = [];
-        if ($this->filesFound > 0) {
+        if ($this->filesFound[$this->foldersGiven] > 0) {
             $sReturn[] = $this->setTableContent('Footer');
         }
-        $sReturn[] = '<h2>'
+        $sReturn[] = '<h4>'
             . sprintf(_('i18n_FinishedCompilation'), '<i>'
                 . htmlentities($this->folderToSearchInto)
-                . '</i>', $this->filesFound, $this->filesCompiled)
-            . '</h2>'
+                . '</i>', $this->filesFound[$this->foldersGiven], $this->filesCompiled[$this->foldersGiven])
+            . '</h4>'
+            . '</div>';
+        return implode('', $sReturn);
+    }
+
+    private function setFooterHtml()
+    {
+        $sReturn   = [];
+        $sReturn[] = '<h4>'
+            . sprintf(_('i18n_FinishedCompilation'), '<i>'
+                . _('i18n_Feedback_VariousFolders')
+                . '</i>', array_sum($this->filesFound), array_sum($this->filesCompiled))
+            . '</h4>';
+        $sReturn[] = '</div><!-- from main Tabber -->'
             . '</body>'
             . '</html>';
         return implode('', $sReturn);
     }
 
-    private function setHeader()
+    private function setHeaderHtml()
     {
         return '<!DOCTYPE html>'
             . '<html lang="' . str_replace('_', '-', $_SESSION['lang']) . '">'
@@ -174,12 +216,43 @@ class compileLocalization
             . '<meta charset="utf-8" />'
             . '<meta name="viewport" content="width=device-width" />'
             . '<title>' . APPLICATION_NAME . '</title>'
+            . $this->setCssFile('css/main.css')
+            . $this->setJavascripFile('js/tabber.min.js')
             . '</head>'
             . '<body>'
-            . '<h1>'
-            . sprintf(_('i18n_StartingCompilation'), '<i>'
-                . htmlentities($this->folderToSearchInto) . '</i>')
-            . '</h1>';
+            . $this->setJavascriptContent('document.write(\'<style type="text/css">.tabber{display:none;}</style>\');')
+            . '<h1>' . APPLICATION_NAME . '</h1>'
+            . '<div class="tabber" id="tab">';
+    }
+
+    private function setHeaderFolder($currentFolder)
+    {
+        return '<div class="tabbertab" id="tab6" title="' . $currentFolder . '">'
+            . '<h4>'
+            . sprintf(_('i18n_StartingCompilation'), '<i>' . htmlentities($this->folderToSearchInto) . '</i>')
+            . '</h4>';
+    }
+
+    /**
+     * Returns javascript codes
+     *
+     * @param string $javascriptContent
+     * @return string
+     */
+    final protected function setJavascriptContent($javascriptContent)
+    {
+        return '<script type="text/javascript">' . $javascriptContent . '</script>';
+    }
+
+    /**
+     * Returns javascript link to a given file
+     *
+     * @param string $content
+     * @return string
+     */
+    final protected function setJavascripFile($content)
+    {
+        return '<script type="text/javascript" src="' . $content . '"></script>';
     }
 
     private function setTableContent($kind, $additionalContent = null)

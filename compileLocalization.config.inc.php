@@ -27,6 +27,12 @@
  */
 define('APPLICATION_NAME', 'execPOcompilation');
 define('APPLICATION_DEFAULT_LANGUAGE', 'en_US');
-define('GETTEXT_COMPILER', 'D:\\www\\AppForDeveloper\\GetText\\msgfmt.exe');
 define('ERROR_DIR', pathinfo(ini_get('error_log'))['dirname']);
 define('ERROR_FILE', 'php' . PHP_VERSION_ID . 'errors_ExecPoCompilation_' . date('Y-m-d') . '.log');
+define('GETTEXT_COMPILER', 'D:\\www\\AppForDeveloper\\GetText\\msgfmt.exe');
+define('LOCALIZATION_FOLDERS', implode('|', [
+    realpath('../') . '\\daniel',
+    realpath('../') . '\\daniel_shared',
+    realpath('../') . '\\nis2mysql',
+    realpath(__DIR__),
+]));
