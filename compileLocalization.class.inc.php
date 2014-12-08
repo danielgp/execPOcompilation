@@ -33,7 +33,7 @@ namespace NamespacePgdApp\execPOcompilation;
  *
  * @author Daniel Popiniuc
  */
-class compileLocalization
+class CompileLocalizationFiles
 {
 
     private $compilerExists;
@@ -138,7 +138,9 @@ class compileLocalization
                                     str_replace($this->folderToSearchInto, '', $fileParts['dirname']),
                                     $fileParts['basename'],
                                     filesize($inputFile),
-                                    '<p style="color:red;">' . sprintf(_('i18n_CompilationNotPossible'), '<i>' . GETTEXT_COMPILER . '</i>') . '</p>',
+                                    '<p style="color:red;">'
+                                    . sprintf(_('i18n_CompilationNotPossible'), '<i>' . GETTEXT_COMPILER . '</i>')
+                                    . '</p>',
                                     '---',
                                     '---',
                                 ]);
@@ -185,26 +187,32 @@ class compileLocalization
         if ($this->filesFound[$this->foldersGiven] > 0) {
             $sReturn[] = $this->setTableContent('Footer');
         }
+        $aSprintF  = [
+            '<i>' . htmlentities($this->folderToSearchInto) . '</i>',
+            $this->filesFound[$this->foldersGiven],
+            $this->filesCompiled[$this->foldersGiven]
+        ];
         $sReturn[] = '<h4>'
-            . sprintf(_('i18n_FinishedCompilation'), '<i>'
-                . htmlentities($this->folderToSearchInto)
-                . '</i>', $this->filesFound[$this->foldersGiven], $this->filesCompiled[$this->foldersGiven])
-            . '</h4>'
-            . '</div>';
+            . sprintf(_('i18n_FinishedCompilation'), $aSprintF[0], $aSprintF[1], $aSprintF[2])
+            . '</h4>';
+        $sReturn[] = '</div>';
         return implode('', $sReturn);
     }
 
     private function setFooterHtml()
     {
         $sReturn   = [];
+        $aSprintF  = [
+            '<i>' . _('i18n_Feedback_VariousFolders') . '</i>',
+            array_sum($this->filesFound),
+            array_sum($this->filesCompiled)
+        ];
         $sReturn[] = '<h4>'
-            . sprintf(_('i18n_FinishedCompilation'), '<i>'
-                . _('i18n_Feedback_VariousFolders')
-                . '</i>', array_sum($this->filesFound), array_sum($this->filesCompiled))
+            . sprintf(_('i18n_FinishedCompilation'), $aSprintF[0], $aSprintF[1], $aSprintF[2])
             . '</h4>';
-        $sReturn[] = '</div><!-- from main Tabber -->'
-            . '</body>'
-            . '</html>';
+        $sReturn[] = '</div><!-- from main Tabber -->';
+        $sReturn[] = '</body>';
+        $sReturn[] = '</html>';
         return implode('', $sReturn);
     }
 
