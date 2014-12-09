@@ -26,7 +26,7 @@
  *
  */
 
-namespace pdg\execPOcompilation;
+namespace danielgp\execPOcompilation;
 
 /**
  * Description of compileLocalization

@@ -25,9 +25,9 @@
  * SOFTWARE.
  *
  */
-require_once 'vendor/inetsys/phpgettext/gettext.inc';
+require_once 'PHP-GetText/gettext.inc'; // delete this line and un-comment the next one if you will be using the compose to download inetsys/phpgettext package
+//require_once 'vendor/inetsys/phpgettext/gettext.inc';
 require_once 'compileLocalization.config.inc.php';
 require_once 'compileLocalization.class.inc.php';
 
-//$app = new NamespacePgdApp\execPOcompilation\compileLocalization(realpath('../'));
-$app = new pdg\execPOcompilation\CompileLocalizationFiles(explode('|', LOCALIZATION_FOLDERS));
+$app = new danielgp\execPOcompilation\CompileLocalizationFiles(explode('|', LOCALIZATION_FOLDERS));
