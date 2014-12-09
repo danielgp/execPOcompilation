@@ -1,5 +1,5 @@
 {
-    "name": "pgd/exec-po-compilation",
+    "name": "pdg/exec-po-compilation",
     "description": "This package is intended to be used to compile localization files stored in PO files resulting in MO files that can be used directly by GetText extension/librry in PHP",
     "keywords": ["localisation", "gettext", "php"],
     "time": "2014-12-09",
