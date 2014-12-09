@@ -1,23 +1,24 @@
 {
-    "name":         "namespace-pgd-app/exec-po-compilation",
-    "description":  "This package is intended to be used to compile localization files stored in PO files resulting in MO files that can be used directly by GetText extension/librry in PHP",
-    "version":      "1.0.0",
-    "keywords":     ["localisation", "gettext", "php"],
-    "time":         "2014-12-08",
-    "type":         "project",
-    "license":      "MIT",
+    "name": "namespace-pgd-app/exec-po-compilation",
+    "description": "This package is intended to be used to compile localization files stored in PO files resulting in MO files that can be used directly by GetText extension/librry in PHP",
+    "version": "1.0.1",
+    "keywords": ["localisation", "gettext", "php"],
+    "time": "2014-12-08",
+    "type": "library",
+    "license": "MIT",
     "authors": [
         {
-            "name":     "Daniel Popiniuc",
-            "email":    "danielpopiniuc@gmail.com",
-            "role":     "Developer"
+            "name": "Daniel Popiniuc",
+            "email": "danielpopiniuc@gmail.com",
+            "role": "Developer"
         }
     ],
     "require": {
         "php": ">=5.4"
     },
     "minimum-stability": "stable",
+    "prefer-stable":    true,
     "archive": {
-        "exclude": ["/nbproject"]
+        "exclude": ["/nbproject", "/*.po", "/scss", "/js/tabber.js"]
     }
 }
