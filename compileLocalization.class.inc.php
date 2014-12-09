@@ -26,7 +26,7 @@
  *
  */
 
-namespace NamespacePgdApp\execPOcompilation;
+namespace pdg\execPOcompilation;
 
 /**
  * Description of compileLocalization
@@ -36,6 +36,7 @@ namespace NamespacePgdApp\execPOcompilation;
 class CompileLocalizationFiles
 {
 
+    private $applicationFlags;
     private $compilerExists;
     private $compiler;
     private $folderToSearchInto;
@@ -45,8 +46,17 @@ class CompileLocalizationFiles
 
     public function __construct($givenFolder)
     {
+        $this->applicationFlags = [
+            'name'                => 'execPOcompilation',
+            'available_languages' => [
+                'en_US' => 'EN',
+                'ro_RO' => 'RO',
+            ],
+            'error_dir'           => pathinfo(ini_get('error_log'))['dirname'],
+            'error_file'          => 'php' . PHP_VERSION_ID . 'errors_ExecPoCompilation_' . date('Y-m-d') . '.log',
+        ];
         // generate an error log file that is for this module only and current date
-        ini_set('error_log', ERROR_DIR . '/' . ERROR_FILE);
+        ini_set('error_log', $this->applicationFlags['error_dir'] . '/' . $this->applicationFlags['error_file']);
         $this->handleLocalization();
         $this->checkCompilerExistance();
         echo $this->setHeaderHtml();
@@ -163,8 +173,12 @@ class CompileLocalizationFiles
     {
         $usedDomain = 'messages';
         if (isset($_GET['lang'])) {
-            $_SESSION['lang'] = $_GET['lang'];
+            $_SESSION['lang'] = filter_var($_GET['lang'], FILTER_SANITIZE_STRING);
         } elseif (!isset($_SESSION['lang'])) {
+            $_SESSION['lang'] = APPLICATION_DEFAULT_LANGUAGE;
+        }
+        /* to avoid potential language injections from other applications that do not applies here */
+        if (!in_array($_SESSION['lang'], array_keys($this->applicationFlags['available_languages']))) {
             $_SESSION['lang'] = APPLICATION_DEFAULT_LANGUAGE;
         }
         T_setlocale(LC_MESSAGES, $_SESSION['lang']);
@@ -232,20 +246,36 @@ class CompileLocalizationFiles
             . '<head>'
             . '<meta charset="utf-8" />'
             . '<meta name="viewport" content="width=device-width" />'
-            . '<title>' . APPLICATION_NAME . '</title>'
+            . '<title>' . $this->applicationFlags['name'] . '</title>'
             . $this->setCssFile('css/main.css')
             . $this->setJavascripFile('js/tabber.min.js')
             . '</head>'
             . '<body>'
             . $this->setJavascriptContent('document.write(\'<style type="text/css">.tabber{display:none;}</style>\');')
-            . '<h1>' . APPLICATION_NAME . '</h1>'
+            . '<h1>' . $this->applicationFlags['name'] . '</h1>'
+            . $this->setHeaderLanguages()
             . '<div class="tabber" id="tab">';
+    }
+
+    private function setHeaderLanguages()
+    {
+        $sReturn = [];
+        foreach ($this->applicationFlags['available_languages'] as $key => $value) {
+            if ($_SESSION['lang'] === $key) {
+                $sReturn[] = '<b>' . $value . '</b>';
+            } else {
+                $sReturn[] = '<a href="?lang=' . $key . '">' . $value . '</a>';
+            }
+        }
+        return '<span class="language_box">'
+            . implode(' | ', $sReturn)
+            . '</span>';
     }
 
     private function setHeaderFolder($currentFolder)
     {
         $sReturn   = [];
-        $sReturn[] = '<div class="tabbertab" id="tab6" title="' . $currentFolder . '">';
+        $sReturn[] = '<div class="tabbertab" title="' . $currentFolder . '">';
         if (is_dir($currentFolder)) {
             $sReturn[] = '<h4>'
                 . sprintf(_('i18n_StartingCompilation'), '<i>' . htmlentities($this->folderToSearchInto) . '</i>')

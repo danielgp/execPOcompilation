@@ -14,4 +14,4 @@ Usage:
 
 require_once 'compileLocalization.config.inc.php';
 require_once 'compileLocalization.class.inc.php';
-$app = new NamespacePgdApp\execPOcompilation\CompileLocalizationFiles(__DIR__);
+$app = new NamespacePgdApp\execPOcompilation\CompileLocalizationFiles(realpath(__DIR__));
