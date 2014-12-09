@@ -37,6 +37,7 @@ class CompileLocalizationFiles
 {
 
     private $compilerExists;
+    private $compiler;
     private $folderToSearchInto;
     private $filesFound;
     private $filesCompiled;
@@ -52,7 +53,7 @@ class CompileLocalizationFiles
         if (is_array($givenFolder)) {
             foreach ($givenFolder as $currentFolder) {
                 $this->foldersGiven++;
-                $this->folderToSearchInto                 = $currentFolder;
+                $this->folderToSearchInto                 = filter_var($currentFolder, FILTER_SANITIZE_STRING);
                 $this->filesFound[$this->foldersGiven]    = 0;
                 $this->filesCompiled[$this->foldersGiven] = 0;
                 echo $this->setHeaderFolder($currentFolder);
@@ -61,7 +62,8 @@ class CompileLocalizationFiles
             }
         } else {
             $this->foldersGiven++;
-            $this->folderToSearchInto                 = $givenFolder;
+            $this->folderToSearchInto                 = filter_var($givenFolder, FILTER_SANITIZE_STRING);
+            ;
             $this->filesFound[$this->foldersGiven]    = 0;
             $this->filesCompiled[$this->foldersGiven] = 0;
             echo $this->setHeaderFolder($givenFolder);
@@ -75,6 +77,7 @@ class CompileLocalizationFiles
     {
         if (file_exists(GETTEXT_COMPILER)) {
             $this->compilerExists = true;
+            $this->compiler       = filter_var(GETTEXT_COMPILER, FILTER_SANITIZE_STRING);
         } else {
             $this->compilerExists = false;
         }
@@ -82,6 +85,10 @@ class CompileLocalizationFiles
 
     private function compileLocalizationFiles($originDirectory)
     {
+        if (!is_dir($originDirectory)) {
+            echo _('i18n_Feedback_InvalidFolder');
+            return '';
+        }
         clearstatcache();
         $givenDir = $originDirectory;
         $dir      = dir($givenDir);
@@ -109,7 +116,7 @@ class CompileLocalizationFiles
                             $this->filesFound[$this->foldersGiven] ++;
                             $outputFile = str_replace('.po', '.mo', $inputFile);
                             if ($this->compilerExists) {
-                                $cmdToExecute         = GETTEXT_COMPILER . ' ' . $inputFile
+                                $cmdToExecute         = $this->compiler . ' ' . $inputFile
                                     . ' --output-file=' . $outputFile
                                     . ' --statistics --check --verbose';
                                 $out                  = null;
@@ -139,7 +146,7 @@ class CompileLocalizationFiles
                                     $fileParts['basename'],
                                     filesize($inputFile),
                                     '<p style="color:red;">'
-                                    . sprintf(_('i18n_CompilationNotPossible'), '<i>' . GETTEXT_COMPILER . '</i>')
+                                    . sprintf(_('i18n_CompilationNotPossible'), '<i>' . $this->compiler . '</i>')
                                     . '</p>',
                                     '---',
                                     '---',
@@ -184,17 +191,19 @@ class CompileLocalizationFiles
     private function setFooterFolder($currentFolder)
     {
         $sReturn = [];
-        if ($this->filesFound[$this->foldersGiven] > 0) {
-            $sReturn[] = $this->setTableContent('Footer');
+        if (is_dir($currentFolder)) {
+            if ($this->filesFound[$this->foldersGiven] > 0) {
+                $sReturn[] = $this->setTableContent('Footer');
+            }
+            $aSprintF  = [
+                '<i>' . htmlentities($this->folderToSearchInto) . '</i>',
+                $this->filesFound[$this->foldersGiven],
+                $this->filesCompiled[$this->foldersGiven]
+            ];
+            $sReturn[] = '<h4>'
+                . sprintf(_('i18n_FinishedCompilation'), $aSprintF[0], $aSprintF[1], $aSprintF[2])
+                . '</h4>';
         }
-        $aSprintF  = [
-            '<i>' . htmlentities($this->folderToSearchInto) . '</i>',
-            $this->filesFound[$this->foldersGiven],
-            $this->filesCompiled[$this->foldersGiven]
-        ];
-        $sReturn[] = '<h4>'
-            . sprintf(_('i18n_FinishedCompilation'), $aSprintF[0], $aSprintF[1], $aSprintF[2])
-            . '</h4>';
         $sReturn[] = '</div>';
         return implode('', $sReturn);
     }
@@ -235,10 +244,14 @@ class CompileLocalizationFiles
 
     private function setHeaderFolder($currentFolder)
     {
-        return '<div class="tabbertab" id="tab6" title="' . $currentFolder . '">'
-            . '<h4>'
-            . sprintf(_('i18n_StartingCompilation'), '<i>' . htmlentities($this->folderToSearchInto) . '</i>')
-            . '</h4>';
+        $sReturn   = [];
+        $sReturn[] = '<div class="tabbertab" id="tab6" title="' . $currentFolder . '">';
+        if (is_dir($currentFolder)) {
+            $sReturn[] = '<h4>'
+                . sprintf(_('i18n_StartingCompilation'), '<i>' . htmlentities($this->folderToSearchInto) . '</i>')
+                . '</h4>';
+        }
+        return implode('', $sReturn);
     }
 
     /**

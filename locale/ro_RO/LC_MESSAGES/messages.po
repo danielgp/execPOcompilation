@@ -19,6 +19,9 @@ msgstr ""
 msgid "i18n_CompilationNotPossible"
 msgstr "Nu am găsit fişierul de compilare conform locaţiei configurate %s... Ajustaţi configuraţia în mod corespunzător şi re-încercaţi!"
 
+msgid "i18n_Feedback_InvalidFolder"
+msgstr "Dosarul oferit spre analiză este invalid..."
+
 msgid "i18n_Feedback_VariousFolders"
 msgstr "Diverse dosare"
 

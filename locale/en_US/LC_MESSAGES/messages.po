@@ -19,6 +19,9 @@ msgstr ""
 msgid "i18n_CompilationNotPossible"
 msgstr "I was not able to find the compiler file on your configured location %s... Adjust your configuration accordingly and try again!"
 
+msgid "i18n_Feedback_InvalidFolder"
+msgstr "Provided folder to analyze is an invalid value..."
+
 msgid "i18n_Feedback_VariousFolders"
 msgstr "Various folders"
 
