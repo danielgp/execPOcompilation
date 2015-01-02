@@ -248,7 +248,7 @@ class CompileLocalizationFiles
             . '<meta name="viewport" content="width=device-width" />'
             . '<title>' . $this->applicationFlags['name'] . '</title>'
             . $this->setCssFile('css/main.css')
-            . $this->setJavascripFile('js/tabber.min.js')
+            . $this->setJavascriptFile('js/tabber.min.js')
             . '</head>'
             . '<body>'
             . $this->setJavascriptContent('document.write(\'<style type="text/css">.tabber{display:none;}</style>\');')
@@ -301,7 +301,7 @@ class CompileLocalizationFiles
      * @param string $content
      * @return string
      */
-    final protected function setJavascripFile($content)
+    final protected function setJavascriptFile($content)
     {
         return '<script type="text/javascript" src="' . $content . '"></script>';
     }
