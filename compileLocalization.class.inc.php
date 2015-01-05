@@ -36,6 +36,8 @@ namespace danielgp\execPOcompilation;
 class CompileLocalizationFiles
 {
 
+    use \danielgp\common_lib\CommonCode;
+
     private $applicationFlags;
     private $compilerExists;
     private $compiler;
@@ -191,17 +193,6 @@ class CompileLocalizationFiles
         }
     }
 
-    /**
-     * Returns css link to a given file
-     *
-     * @param string $cssFile
-     * @return string
-     */
-    final protected function setCssFile($cssFile)
-    {
-        return '<link rel="stylesheet" type="text/css" href="' . $cssFile . '" />';
-    }
-
     private function setFooterFolder($currentFolder)
     {
         $sReturn = [];
@@ -282,28 +273,6 @@ class CompileLocalizationFiles
                 . '</h4>';
         }
         return implode('', $sReturn);
-    }
-
-    /**
-     * Returns javascript codes
-     *
-     * @param string $javascriptContent
-     * @return string
-     */
-    final protected function setJavascriptContent($javascriptContent)
-    {
-        return '<script type="text/javascript">' . $javascriptContent . '</script>';
-    }
-
-    /**
-     * Returns javascript link to a given file
-     *
-     * @param string $content
-     * @return string
-     */
-    final protected function setJavascriptFile($content)
-    {
-        return '<script type="text/javascript" src="' . $content . '"></script>';
     }
 
     private function setTableContent($kind, $additionalContent = null)

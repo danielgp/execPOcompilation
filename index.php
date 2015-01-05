@@ -29,9 +29,9 @@
  * delete next line and un-comment the next one
  * if you will be using the compose to download inetsys/phpgettext package
  */
-require_once 'PHP-GetText/gettext.inc';
-//require_once 'vendor/inetsys/phpgettext/gettext.inc';
 require_once 'compileLocalization.config.inc.php';
+require_once 'vendor/danielgp/common-lib/source/common.inc.php';
+require_once 'vendor/inetsys/phpgettext/gettext.inc';
 require_once 'compileLocalization.class.inc.php';
 
 $app = new danielgp\execPOcompilation\CompileLocalizationFiles(explode('|', LOCALIZATION_FOLDERS));
