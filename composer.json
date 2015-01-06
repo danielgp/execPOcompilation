@@ -14,13 +14,17 @@
     ],
     "require": {
         "php": ">=5.3",
-        "danielgp/common-lib": ">=1.0.2",
+        "danielgp/common-lib": ">=1.1.2",
         "inetsys/phpgettext":">=1.0.11"
     },
     "autoload": {
         "psr-4": {
-            "pdg\\execPOcompilation\\": ""
-        }
+            "": "source/",
+            "danielgp\\common_lib\\": "vendor/danielgp/common-lib/"
+        },
+        "classmap": [
+            "source/CompileLocalizationFiles.php"
+        ]
     },
     "minimum-stability": "stable",
     "prefer-stable":    true,

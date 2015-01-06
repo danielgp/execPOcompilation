@@ -53,12 +53,8 @@ class CompileLocalizationFiles
             'available_languages' => [
                 'en_US' => 'EN',
                 'ro_RO' => 'RO',
-            ],
-            'error_dir'           => pathinfo(ini_get('error_log'))['dirname'],
-            'error_file'          => 'php' . PHP_VERSION_ID . 'errors_ExecPoCompilation_' . date('Y-m-d') . '.log',
+            ]
         ];
-        // generate an error log file that is for this module only and current date
-        ini_set('error_log', $this->applicationFlags['error_dir'] . '/' . $this->applicationFlags['error_file']);
         $this->handleLocalization();
         $this->checkCompilerExistance();
         echo $this->setHeaderHtml();
