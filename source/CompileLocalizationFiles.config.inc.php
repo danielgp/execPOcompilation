@@ -30,7 +30,7 @@ define('GETTEXT_COMPILER', 'D:\\www\\AppForDeveloper\\GetText\\msgfmt.exe');
 define('LOCALIZATION_FOLDERS', implode('|', [
     realpath('../../') . '\\dpopiniuc.BitBucket\\daniel_projects',
     realpath('../../') . '\\dpopiniuc.BitBucket\\daniel_shared',
-    realpath('../') . '\\nis2mysql',
-    realpath('../') . '\\salariu',
+    realpath('../../') . '\\nis2mysql\\source',
+    realpath('../../') . '\\salariu\\Salariu',
     realpath(__DIR__),
 ]));
