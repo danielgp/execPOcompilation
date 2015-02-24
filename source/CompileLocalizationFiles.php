@@ -143,8 +143,8 @@ class CompileLocalizationFiles
                                     str_replace($this->folderToSearchInto, '', $fileParts['dirname']),
                                     $fileParts['basename'],
                                     filesize($inputFile),
-                                    $cmdToExecute,
-                                    implode('<br/>', $feedbackFromCompiler),
+                                    filter_var($cmdToExecute, FILTER_SANITIZE_STRING),
+                                    filter_var(implode('<br/>', $feedbackFromCompiler), FILTER_SANITIZE_STRING),
                                     filesize($outputFile),
                                 ]);
                             } else {
@@ -221,23 +221,17 @@ class CompileLocalizationFiles
             . sprintf(_('i18n_FinishedCompilation'), $aSprintF[0], $aSprintF[1], $aSprintF[2])
             . '</h4>';
         $sReturn[] = '</div><!-- from main Tabber -->';
-        $sReturn[] = '</body>';
-        $sReturn[] = '</html>';
-        return implode('', $sReturn);
+        return $this->setFooterCommon(implode('', $sReturn));
     }
 
     private function setHeaderHtml()
     {
-        return '<!DOCTYPE html>'
-            . '<html lang="' . str_replace('_', '-', $_SESSION['lang']) . '">'
-            . '<head>'
-            . '<meta charset="utf-8" />'
-            . '<meta name="viewport" content="width=device-width" />'
-            . '<title>' . $this->applicationFlags['name'] . '</title>'
-            . $this->setCssFile('css/main.css')
-            . $this->setJavascriptFile('js/tabber.min.js')
-            . '</head>'
-            . '<body>'
+        return $this->setHeaderCommon([
+                'lang'       => str_replace('_', '-', $_SESSION['lang']),
+                'title'      => $this->applicationFlags['name'],
+                'css'        => 'css/main.css',
+                'javascript' => 'js/tabber.min.js',
+            ])
             . $this->setJavascriptContent('document.write(\'<style type="text/css">.tabber{display:none;}</style>\');')
             . '<h1>' . $this->applicationFlags['name'] . '</h1>'
             . $this->setHeaderLanguages()

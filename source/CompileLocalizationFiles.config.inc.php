@@ -28,10 +28,6 @@
 define('APPLICATION_DEFAULT_LANGUAGE', 'en_US');
 define('GETTEXT_COMPILER', 'D:\\www\\AppForDeveloper\\GetText\\msgfmt.exe');
 define('LOCALIZATION_FOLDERS', implode('|', [
-    realpath('../../') . '\\dpopiniuc.BitBucket\\daniel_projects',
-    realpath('../../') . '\\dpopiniuc.BitBucket\\daniel_shared',
-    realpath('../../') . '\\common-lib',
-    realpath('../../') . '\\nis2mysql\\source',
-    realpath('../../') . '\\salariu\\Salariu',
-    realpath(__DIR__),
+    realpath('../../../') . '\\dpopiniuc.BitBucket',
+    realpath('../../'),
 ]));
