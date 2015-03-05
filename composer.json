@@ -2,7 +2,6 @@
     "name": "danielgp/exec-po-compilation",
     "description": "This package is intended to be used to compile localization files stored in PO files resulting in MO files that can be used directly by GetText extension/librry in PHP",
     "keywords": ["localisation", "gettext", "php"],
-    "time": "2014-12-09 22:44:00",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -13,8 +12,8 @@
         }
     ],
     "require": {
-        "php": ">=5.3",
-        "danielgp/common-lib": ">=1.1.2",
+        "php": ">=5.4",
+        "danielgp/common-lib": "*",
         "inetsys/phpgettext":">=1.0.11"
     },
     "autoload": {
