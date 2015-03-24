@@ -30,7 +30,6 @@
  * if you will be using the compose to download inetsys/phpgettext package
  */
 require_once 'CompileLocalizationFiles.config.inc.php';
-require_once '../vendor/inetsys/phpgettext/gettext.inc';
 require_once '../vendor/autoload.php';
 
 $app = new danielgp\execPOcompilation\CompileLocalizationFiles(explode('|', LOCALIZATION_FOLDERS));

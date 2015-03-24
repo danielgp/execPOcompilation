@@ -45,6 +45,7 @@ class CompileLocalizationFiles
     private $filesFound;
     private $filesCompiled;
     private $foldersGiven = 0;
+    private $tApp         = null;
 
     public function __construct($givenFolder)
     {
@@ -94,7 +95,7 @@ class CompileLocalizationFiles
     private function compileLocalizationFiles($originDirectory)
     {
         if (!is_dir($originDirectory)) {
-            echo _('i18n_Feedback_InvalidFolder');
+            echo $this->tApp->gettext('i18n_Feedback_InvalidFolder');
             return '';
         }
         clearstatcache();
@@ -113,12 +114,12 @@ class CompileLocalizationFiles
                             if ($this->filesFound[$this->foldersGiven] == 0) {
                                 echo $this->setTableContent('Header', [
                                     '#',
-                                    _('i18n_FeedbackTableHeader_FilePath'),
-                                    _('i18n_FeedbackTableHeader_FileName'),
-                                    _('i18n_FeedbackTableHeader_FileMoSize'),
-                                    _('i18n_FeedbackTableHeader_CommandExecuted'),
-                                    _('i18n_FeedbackTableHeader_CommandFeedback'),
-                                    _('i18n_FeedbackTableHeader_FilePoSize'),
+                                    $this->tApp->gettext('i18n_FeedbackTableHeader_FilePath'),
+                                    $this->tApp->gettext('i18n_FeedbackTableHeader_FileName'),
+                                    $this->tApp->gettext('i18n_FeedbackTableHeader_FileMoSize'),
+                                    $this->tApp->gettext('i18n_FeedbackTableHeader_CommandExecuted'),
+                                    $this->tApp->gettext('i18n_FeedbackTableHeader_CommandFeedback'),
+                                    $this->tApp->gettext('i18n_FeedbackTableHeader_FilePoSize'),
                                 ]);
                             }
                             $this->filesFound[$this->foldersGiven] ++;
@@ -154,7 +155,8 @@ class CompileLocalizationFiles
                                     $fileParts['basename'],
                                     filesize($inputFile),
                                     '<p style="color:red;">'
-                                    . sprintf(_('i18n_CompilationNotPossible'), '<i>' . $this->compiler . '</i>')
+                                    . sprintf($this->tApp->gettext('i18n_CompilationNotPossible'), '<i>'
+                                        . $this->compiler . '</i>')
                                     . '</p>',
                                     '---',
                                     '---',
@@ -169,7 +171,6 @@ class CompileLocalizationFiles
 
     private function handleLocalization()
     {
-        $usedDomain = 'messages';
         if (isset($_GET['lang'])) {
             $_SESSION['lang'] = filter_var($_GET['lang'], FILTER_SANITIZE_STRING);
         } elseif (!isset($_SESSION['lang'])) {
@@ -179,14 +180,10 @@ class CompileLocalizationFiles
         if (!in_array($_SESSION['lang'], array_keys($this->applicationFlags['available_languages']))) {
             $_SESSION['lang'] = APPLICATION_DEFAULT_LANGUAGE;
         }
-        T_setlocale(LC_MESSAGES, $_SESSION['lang']);
-        if (function_exists('bindtextdomain')) {
-            bindtextdomain($usedDomain, realpath('./locale'));
-            bind_textdomain_codeset($usedDomain, 'UTF-8');
-            textdomain($usedDomain);
-        } else {
-            echo 'No gettext extension/library is active in current PHP configuration!';
-        }
+        $localizationFile = 'locale/' . $_SESSION['lang'] . '/LC_MESSAGES/messages.mo';
+        $translations     = \Gettext\Extractors\Mo::fromFile($localizationFile);
+        $this->tApp       = new \Gettext\Translator();
+        $this->tApp->loadTranslations($translations);
     }
 
     private function setFooterFolder($currentFolder)
@@ -202,7 +199,7 @@ class CompileLocalizationFiles
                 $this->filesCompiled[$this->foldersGiven]
             ];
             $sReturn[] = '<h4>'
-                . sprintf(_('i18n_FinishedCompilation'), $aSprintF[0], $aSprintF[1], $aSprintF[2])
+                . sprintf($this->tApp->gettext('i18n_FinishedCompilation'), $aSprintF[0], $aSprintF[1], $aSprintF[2])
                 . '</h4>';
         }
         $sReturn[] = '</div>';
@@ -213,12 +210,12 @@ class CompileLocalizationFiles
     {
         $sReturn   = [];
         $aSprintF  = [
-            '<i>' . _('i18n_Feedback_VariousFolders') . '</i>',
+            '<i>' . $this->tApp->gettext('i18n_Feedback_VariousFolders') . '</i>',
             array_sum($this->filesFound),
             array_sum($this->filesCompiled)
         ];
         $sReturn[] = '<h4>'
-            . sprintf(_('i18n_FinishedCompilation'), $aSprintF[0], $aSprintF[1], $aSprintF[2])
+            . sprintf($this->tApp->gettext('i18n_FinishedCompilation'), $aSprintF[0], $aSprintF[1], $aSprintF[2])
             . '</h4>';
         $sReturn[] = '</div><!-- from main Tabber -->';
         return $this->setFooterCommon(implode('', $sReturn));
@@ -259,7 +256,8 @@ class CompileLocalizationFiles
         $sReturn[] = '<div class="tabbertab" title="' . $currentFolder . '">';
         if (is_dir($currentFolder)) {
             $sReturn[] = '<h4>'
-                . sprintf(_('i18n_StartingCompilation'), '<i>' . htmlentities($this->folderToSearchInto) . '</i>')
+                . sprintf($this->tApp->gettext('i18n_StartingCompilation'), '<i>'
+                    . htmlentities($this->folderToSearchInto) . '</i>')
                 . '</h4>';
         }
         return implode('', $sReturn);
