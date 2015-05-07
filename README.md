@@ -1,6 +1,6 @@
 execPOcompilation
 =================
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/2ae8e5bd-917c-4df0-96e4-5754189c304c/small.png)](https://insight.sensiolabs.com/projects/2ae8e5bd-917c-4df0-96e4-5754189c304c)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/2ae8e5bd-917c-4df0-96e4-5754189c304c/big.png)](https://insight.sensiolabs.com/projects/2ae8e5bd-917c-4df0-96e4-5754189c304c)
 
 
 recursive search PO files within a given folder and compile them into MO

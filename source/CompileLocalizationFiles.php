@@ -52,8 +52,8 @@ class CompileLocalizationFiles
         $this->applicationFlags = [
             'name'                => 'execPOcompilation',
             'available_languages' => [
-                'en_US' => 'EN',
-                'ro_RO' => 'RO',
+                'en_US' => 'US English',
+                'ro_RO' => 'Română',
             ]
         ];
         $this->handleLocalization();
@@ -218,6 +218,7 @@ class CompileLocalizationFiles
             . sprintf($this->tApp->gettext('i18n_FinishedCompilation'), $aSprintF[0], $aSprintF[1], $aSprintF[2])
             . '</h4>';
         $sReturn[] = '</div><!-- from main Tabber -->';
+        $sReturn[] = $this->setUppeRightBoxLanguages($this->applicationFlags['available_languages']);
         return $this->setFooterCommon(implode('', $sReturn));
     }
 
@@ -226,28 +227,15 @@ class CompileLocalizationFiles
         return $this->setHeaderCommon([
                 'lang'       => str_replace('_', '-', $_SESSION['lang']),
                 'title'      => $this->applicationFlags['name'],
-                'css'        => 'css/main.css',
+                'css'        => [
+                    '../vendor/components/flag-icon-css/css/flag-icon.min.css',
+                    'css/main.css',
+                ],
                 'javascript' => 'js/tabber.min.js',
             ])
             . $this->setJavascriptContent('document.write(\'<style type="text/css">.tabber{display:none;}</style>\');')
             . '<h1>' . $this->applicationFlags['name'] . '</h1>'
-            . $this->setHeaderLanguages()
             . '<div class="tabber" id="tab">';
-    }
-
-    private function setHeaderLanguages()
-    {
-        $sReturn = [];
-        foreach ($this->applicationFlags['available_languages'] as $key => $value) {
-            if ($_SESSION['lang'] === $key) {
-                $sReturn[] = '<b>' . $value . '</b>';
-            } else {
-                $sReturn[] = '<a href="?lang=' . $key . '">' . $value . '</a>';
-            }
-        }
-        return '<span class="language_box">'
-            . implode(' | ', $sReturn)
-            . '</span>';
     }
 
     private function setHeaderFolder($currentFolder)

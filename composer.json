@@ -13,7 +13,8 @@
     ],
     "require": {
         "php": ">=5.4",
-        "danielgp/common-lib": "*"
+        "danielgp/common-lib": "*",
+        "danielgp/common-styles": "*"
     },
     "autoload": {
         "psr-4": {
