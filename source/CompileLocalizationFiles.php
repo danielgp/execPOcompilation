@@ -33,10 +33,10 @@ namespace danielgp\execPOcompilation;
  *
  * @author Daniel Popiniuc
  */
-class CompileLocalizationFiles
-{
+class CompileLocalizationFiles {
 
-    use \danielgp\common_lib\CommonCode;
+    use \danielgp\common_lib\CommonCode,
+        \danielgp\network_components\NetworkComponentsByDanielGP;
 
     private $applicationFlags;
     private $compilerExists;
@@ -47,8 +47,7 @@ class CompileLocalizationFiles
     private $foldersGiven = 0;
     private $tApp         = null;
 
-    public function __construct($givenFolder)
-    {
+    public function __construct($givenFolder) {
         $this->applicationFlags = [
             'name'                => 'execPOcompilation',
             'available_languages' => [
@@ -82,8 +81,7 @@ class CompileLocalizationFiles
         echo $this->setFooterHtml();
     }
 
-    private function checkCompilerExistance()
-    {
+    private function checkCompilerExistance() {
         if (file_exists(GETTEXT_COMPILER)) {
             $this->compilerExists = true;
             $this->compiler       = filter_var(GETTEXT_COMPILER, FILTER_SANITIZE_STRING);
@@ -92,8 +90,7 @@ class CompileLocalizationFiles
         }
     }
 
-    private function compileLocalizationFiles($originDirectory)
-    {
+    private function compileLocalizationFiles($originDirectory) {
         if (!is_dir($originDirectory)) {
             echo $this->tApp->gettext('i18n_Feedback_InvalidFolder');
             return '';
@@ -126,8 +123,8 @@ class CompileLocalizationFiles
                             $outputFile = str_replace('.po', '.mo', $inputFile);
                             if ($this->compilerExists) {
                                 $cmdToExecute         = $this->compiler . ' ' . $inputFile
-                                    . ' --output-file=' . $outputFile
-                                    . ' --statistics --check --verbose';
+                                        . ' --output-file=' . $outputFile
+                                        . ' --statistics --check --verbose';
                                 $out                  = null;
                                 $feedbackFromCompiler = [];
                                 exec($cmdToExecute . ' 2>&1', $out);
@@ -156,7 +153,7 @@ class CompileLocalizationFiles
                                     filesize($inputFile),
                                     '<p style="color:red;">'
                                     . sprintf($this->tApp->gettext('i18n_CompilationNotPossible'), '<i>'
-                                        . $this->compiler . '</i>')
+                                            . $this->compiler . '</i>')
                                     . '</p>',
                                     '---',
                                     '---',
@@ -169,8 +166,7 @@ class CompileLocalizationFiles
         }
     }
 
-    private function handleLocalization()
-    {
+    private function handleLocalization() {
         if (isset($_GET['lang'])) {
             $_SESSION['lang'] = filter_var($_GET['lang'], FILTER_SANITIZE_STRING);
         } elseif (!isset($_SESSION['lang'])) {
@@ -186,8 +182,7 @@ class CompileLocalizationFiles
         $this->tApp->loadTranslations($translations);
     }
 
-    private function setFooterFolder($currentFolder)
-    {
+    private function setFooterFolder($currentFolder) {
         $sReturn = [];
         if (is_dir($currentFolder)) {
             if ($this->filesFound[$this->foldersGiven] > 0) {
@@ -199,15 +194,14 @@ class CompileLocalizationFiles
                 $this->filesCompiled[$this->foldersGiven]
             ];
             $sReturn[] = '<h4>'
-                . sprintf($this->tApp->gettext('i18n_FinishedCompilation'), $aSprintF[0], $aSprintF[1], $aSprintF[2])
-                . '</h4>';
+                    . sprintf($this->tApp->gettext('i18n_FinishedCompilation'), $aSprintF[0], $aSprintF[1], $aSprintF[2])
+                    . '</h4>';
         }
         $sReturn[] = '</div>';
         return implode('', $sReturn);
     }
 
-    private function setFooterHtml()
-    {
+    private function setFooterHtml() {
         $sReturn   = [];
         $aSprintF  = [
             '<i>' . $this->tApp->gettext('i18n_Feedback_VariousFolders') . '</i>',
@@ -215,44 +209,41 @@ class CompileLocalizationFiles
             array_sum($this->filesCompiled)
         ];
         $sReturn[] = '<h4>'
-            . sprintf($this->tApp->gettext('i18n_FinishedCompilation'), $aSprintF[0], $aSprintF[1], $aSprintF[2])
-            . '</h4>';
+                . sprintf($this->tApp->gettext('i18n_FinishedCompilation'), $aSprintF[0], $aSprintF[1], $aSprintF[2])
+                . '</h4>';
         $sReturn[] = '</div><!-- from main Tabber -->';
         $sReturn[] = $this->setUppeRightBoxLanguages($this->applicationFlags['available_languages']);
         return $this->setFooterCommon(implode('', $sReturn));
     }
 
-    private function setHeaderHtml()
-    {
+    private function setHeaderHtml() {
         return $this->setHeaderCommon([
-                'lang'       => str_replace('_', '-', $_SESSION['lang']),
-                'title'      => $this->applicationFlags['name'],
-                'css'        => [
-                    '../vendor/components/flag-icon-css/css/flag-icon.min.css',
-                    'css/main.css',
-                ],
-                'javascript' => 'js/tabber.min.js',
-            ])
-            . $this->setJavascriptContent('document.write(\'<style type="text/css">.tabber{display:none;}</style>\');')
-            . '<h1>' . $this->applicationFlags['name'] . '</h1>'
-            . '<div class="tabber" id="tab">';
+                    'lang'       => str_replace('_', '-', $_SESSION['lang']),
+                    'title'      => $this->applicationFlags['name'],
+                    'css'        => [
+                        '../vendor/components/flag-icon-css/css/flag-icon.min.css',
+                        'css/main.css',
+                    ],
+                    'javascript' => 'js/tabber.min.js',
+                ])
+                . $this->setJavascriptContent('document.write(\'<style type="text/css">.tabber{display:none;}</style>\');')
+                . '<h1>' . $this->applicationFlags['name'] . '</h1>'
+                . '<div class="tabber" id="tab">';
     }
 
-    private function setHeaderFolder($currentFolder)
-    {
+    private function setHeaderFolder($currentFolder) {
         $sReturn   = [];
         $sReturn[] = '<div class="tabbertab" title="' . $currentFolder . '">';
         if (is_dir($currentFolder)) {
             $sReturn[] = '<h4>'
-                . sprintf($this->tApp->gettext('i18n_StartingCompilation'), '<i>'
-                    . htmlentities($this->folderToSearchInto) . '</i>')
-                . '</h4>';
+                    . sprintf($this->tApp->gettext('i18n_StartingCompilation'), '<i>'
+                            . htmlentities($this->folderToSearchInto) . '</i>')
+                    . '</h4>';
         }
         return implode('', $sReturn);
     }
 
-    private function setTableContent($kind, $additionalContent = null)
-    {
+    private function setTableContent($kind, $additionalContent = null) {
         $sReturn = [];
         switch ($kind) {
             case 'Cell':
@@ -264,20 +255,21 @@ class CompileLocalizationFiles
                 break;
             case 'Footer':
                 $sReturn[] = '</tbody>'
-                    . '</table>';
+                        . '</table>';
                 break;
             case 'Header':
                 $sReturn[] = '<table>'
-                    . '<thead>'
-                    . '<tr>';
+                        . '<thead>'
+                        . '<tr>';
                 if (is_array($additionalContent)) {
                     $sReturn[] = '<th>' . implode('</th><th>', $additionalContent) . '</th>';
                 }
                 $sReturn[] = '</tr>'
-                    . '</thead>'
-                    . '<tbody>';
+                        . '</thead>'
+                        . '<tbody>';
                 break;
         }
         return implode('', $sReturn);
     }
+
 }
